@@ -9,6 +9,9 @@ import Celebration from './components/Celebration';
 import StoryOptions from './components/StoryOptions';
 import ParentalControls from './safety/ParentalControls';
 import { sanitizeInput, sanitizeOutput } from './safety/ContentFilter';
+import AnimatedBackground from './art/AnimatedBackground';
+import StoryCanvas from './art/StoryCanvas';
+import StorybookExporter from './art/StorybookExporter';
 
 // Ollama story generator
 const generateStory = async (prompt, theme, character) => {
@@ -193,7 +196,10 @@ function App() {
   }, [story]);
 
   return (
-    <div className="min-h-screen py-8 px-4 pb-32">
+    <div className="min-h-screen py-8 px-4 pb-32 relative">
+      {/* Mason's Animated Background */}
+      <AnimatedBackground theme={selectedTheme} />
+      
       {/* Gamification Header */}
       <Gamification 
         streak={streak} 
@@ -333,17 +339,20 @@ function App() {
                 key="story"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="kids-card"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-4xl">{characters.find(c => c.id === selectedCharacter)?.icon}</span>
-                  <h2 className="text-2xl font-bold text-kids-purple">Your Story!</h2>
-                </div>
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg">
-                    {displayedStory}
-                  </p>
-                </div>
+                {/* Mason's Story Canvas */}
+                <StoryCanvas 
+                  story={displayedStory}
+                  theme={selectedTheme}
+                  character={selectedCharacter}
+                />
+                
+                {/* Mason's Export Feature */}
+                <StorybookExporter
+                  story={story}
+                  theme={selectedTheme}
+                  character={selectedCharacter}
+                />
                 
                 <motion.div
                   initial={{ opacity: 0 }}
