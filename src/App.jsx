@@ -11,7 +11,7 @@ const generateStory = async (prompt) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama3.1',
+        model: 'tinyllama',
         prompt: `Create a short, magical children's story (2-3 paragraphs) based on this idea: ${prompt}\n\nMake it kid-friendly, age 4-9, with a happy ending. Use simple words and include emojis.`,
         stream: false
       })
