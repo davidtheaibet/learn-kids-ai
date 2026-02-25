@@ -12,6 +12,8 @@ import { sanitizeInput, sanitizeOutput } from './safety/ContentFilter';
 import AnimatedBackground from './art/AnimatedBackground';
 import StoryCanvas from './art/StoryCanvas';
 import StorybookExporter from './art/StorybookExporter';
+import AudioPlayer from './audio/AudioPlayer';
+import { AudioToggle } from './audio/SoundEffects';
 
 // Ollama story generator
 const generateStory = async (prompt, theme, character) => {
@@ -104,6 +106,8 @@ function App() {
   });
   const [showParentalControls, setShowParentalControls] = useState(false);
   const [safetyWarning, setSafetyWarning] = useState(null);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(true);
 
   // Save gamification data
   useEffect(() => {
@@ -238,6 +242,14 @@ function App() {
           <p className="text-white/70 text-sm mt-2">
             {storyCount} stories created • Level {level + 1}
           </p>
+          
+          {/* Hunter's Audio Toggle */}
+          <div className="mt-4 flex justify-center">
+            <AudioToggle 
+              enabled={audioEnabled} 
+              onToggle={() => setAudioEnabled(!audioEnabled)}
+            />
+          </div>
         </div>
 
         {/* Main Content */}
@@ -353,6 +365,15 @@ function App() {
                   theme={selectedTheme}
                   character={selectedCharacter}
                 />
+                
+                {/* Hunter's Audio Player */}
+                {audioEnabled && (
+                  <AudioPlayer
+                    story={story}
+                    isPlaying={isPlayingAudio}
+                    setIsPlaying={setIsPlayingAudio}
+                  />
+                )}
                 
                 <motion.div
                   initial={{ opacity: 0 }}
