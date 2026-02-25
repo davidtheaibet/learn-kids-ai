@@ -4,18 +4,31 @@ import VoiceInput from './components/VoiceInput';
 import StoryDisplay from './components/StoryDisplay';
 import BigButton from './components/BigButton';
 
-// Mock story generator (replace with local LLM later)
+// Ollama local LLM story generator
 const generateStory = async (prompt) => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  
-  const templates = [
-    `Once upon a time, in a magical land far away, there lived a curious ${prompt.toLowerCase().includes('dragon') ? 'dragon' : 'creature'} who loved adventures.`,
-    `In a cozy little village, there was a wonderful friend who dreamed of ${prompt}.`,
-    `Long ago, when stars whispered secrets to the moon, something amazing happened...`
-  ];
-  
-  return `${templates[Math.floor(Math.random() * templates.length)]}\n\n${prompt}\n\nAnd so, the adventure continued with laughter, friendship, and magic. The end! 🌟`;
+  try {
+    const response = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama3.1',
+        prompt: `Create a short, magical children's story (2-3 paragraphs) based on this idea: ${prompt}\n\nMake it kid-friendly, age 4-9, with a happy ending. Use simple words and include emojis.`,
+        stream: false
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Ollama not responding');
+    }
+    
+    const data = await response.json();
+    return data.response || 'Pippin is thinking... try again! 🌟';
+  } catch (error) {
+    console.error('Ollama error:', error);
+    // Fallback to mock if Ollama isn't ready
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return `Once upon a time, there was a magical adventure about ${prompt}! ✨\n\nThe story continues with wonder and excitement... (Pippin is learning to tell better stories!) 🌈`;
+  }
 };
 
 function App() {
