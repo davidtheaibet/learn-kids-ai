@@ -7,6 +7,8 @@ import Gamification from './components/Gamification';
 import PippinMascot from './components/PippinMascot';
 import Celebration from './components/Celebration';
 import StoryOptions from './components/StoryOptions';
+import ParentalControls from './safety/ParentalControls';
+import { sanitizeInput, sanitizeOutput } from './safety/ContentFilter';
 
 // Ollama story generator
 const generateStory = async (prompt, theme, character) => {
@@ -97,6 +99,8 @@ function App() {
     const saved = localStorage.getItem('learnKids_stories');
     return saved ? parseInt(saved) : 0;
   });
+  const [showParentalControls, setShowParentalControls] = useState(false);
+  const [safetyWarning, setSafetyWarning] = useState(null);
 
   // Save gamification data
   useEffect(() => {
@@ -110,9 +114,24 @@ function App() {
   const handleTranscript = async (transcript) => {
     if (!transcript.trim()) return;
     
+    // Jaxon Safety Check
+    const safetyCheck = sanitizeInput(transcript);
+    if (!safetyCheck.safe) {
+      setSafetyWarning(safetyCheck.reason);
+      setTimeout(() => setSafetyWarning(null), 3000);
+      return;
+    }
+    
+    const safeTranscript = safetyCheck.text;
+    localStorage.setItem('learnKids_lastActive', new Date().toISOString());
+    
     setIsGenerating(true);
     try {
-      const generatedStory = await generateStory(transcript, selectedTheme, selectedCharacter);
+      let generatedStory = await generateStory(safeTranscript, selectedTheme, selectedCharacter);
+      
+      // Jaxon Output Filter
+      generatedStory = sanitizeOutput(generatedStory);
+      
       setStory(generatedStory);
       
       // Update gamification
@@ -240,6 +259,21 @@ function App() {
                   setIsListening={setIsListening}
                 />
                 
+                {/* Safety Warning */}
+                <AnimatePresence>
+                  {safetyWarning && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="bg-red-100 border-2 border-red-400 text-red-700 p-4 rounded-xl mt-4 text-center"
+                    >
+                      <p className="font-bold">🛡️ {safetyWarning}</p>
+                      <p className="text-sm mt-1">Let's try a different idea!</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
                 {/* Tips */}
                 <motion.div 
                   initial={{ opacity: 0 }}
@@ -249,6 +283,17 @@ function App() {
                 >
                   <p className="text-sm">💡 Try saying: "A dragon who loves ice cream"</p>
                 </motion.div>
+                
+                {/* Parent Button */}
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1 }}
+                  onClick={() => setShowParentalControls(true)}
+                  className="mt-8 text-white/60 text-sm hover:text-white/80 underline"
+                >
+                  👨‍👩‍👧‍👦 Parent Area
+                </motion.button>
               </motion.div>
             )}
 
@@ -326,6 +371,12 @@ function App() {
       <PippinMascot 
         isListening={isListening}
         isGenerating={isGenerating}
+      />
+      
+      {/* Parental Controls */}
+      <ParentalControls 
+        isOpen={showParentalControls}
+        onClose={() => setShowParentalControls(false)}
       />
     </div>
   );
