@@ -15,6 +15,7 @@ import StorybookExporter from './art/StorybookExporter';
 import AudioPlayer from './audio/AudioPlayer';
 import { AudioToggle } from './audio/SoundEffects';
 import PartyInvitation from './components/PartyInvitation';
+import QuizGame from './components/QuizGame';
 
 // Ollama story generator
 const generateStory = async (prompt, theme, character) => {
@@ -254,12 +255,12 @@ function App() {
           </div>
           
           {/* Mode Switcher */}
-          <div className="mt-4 flex justify-center gap-2">
+          <div className="mt-4 flex justify-center gap-2 flex-wrap">
             <button
               onClick={() => setAppMode('stories')}
               className={`px-4 py-2 rounded-full text-sm font-bold transition ${
-                appMode === 'stories' 
-                  ? 'bg-white text-purple-600' 
+                appMode === 'stories'
+                  ? 'bg-white text-purple-600'
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}
             >
@@ -268,12 +269,22 @@ function App() {
             <button
               onClick={() => setAppMode('invitations')}
               className={`px-4 py-2 rounded-full text-sm font-bold transition ${
-                appMode === 'invitations' 
-                  ? 'bg-white text-purple-600' 
+                appMode === 'invitations'
+                  ? 'bg-white text-purple-600'
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}
             >
-              🎉 Party Invites
+              🎉 Invites
+            </button>
+            <button
+              onClick={() => setAppMode('quiz')}
+              className={`px-4 py-2 rounded-full text-sm font-bold transition ${
+                appMode === 'quiz'
+                  ? 'bg-white text-purple-600'
+                  : 'bg-white/20 text-white hover:bg-white/30'
+              }`}
+            >
+              🧠 Quiz
             </button>
           </div>
         </div>
@@ -283,6 +294,24 @@ function App() {
           {/* Party Invitations Mode */}
           {appMode === 'invitations' && (
             <PartyInvitation />
+          )}
+
+          {/* Quiz Game Mode */}
+          {appMode === 'quiz' && (
+            <QuizGame
+              onXpEarned={(amount) => {
+                const newXp = xp + amount;
+                setXp(newXp);
+                if (newXp >= (level + 1) * 100) {
+                  setLevel(level + 1);
+                }
+              }}
+              onBadgeEarned={(id, name) => {
+                if (!badges.find(b => b.id === id)) {
+                  setBadges([...badges, { id, name, icon: '🏆' }]);
+                }
+              }}
+            />
           )}
           
           <AnimatePresence mode="wait">
