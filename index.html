@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LearnKids AI - Safe AI Creative Platform for Kids</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -19,15 +19,66 @@
       color: #333;
     }
     
+    /* Floating shapes animation */
+    .floating-shapes {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    .shape {
+      position: absolute;
+      opacity: 0.1;
+      animation: float 20s infinite ease-in-out;
+    }
+    
+    .shape:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 50%;
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    
+    .shape:nth-child(2) {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      top: 60%;
+      right: 10%;
+      animation-delay: 5s;
+    }
+    
+    .shape:nth-child(3) {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 50%;
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 10s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(180deg); }
+    }
+    
     .navbar {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      padding: 0.75rem 2rem;
       position: fixed;
       width: 100%;
       top: 0;
       z-index: 1000;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 30px rgba(0,0,0,0.08);
     }
     
     .nav-container {
@@ -43,34 +94,45 @@
       align-items: center;
       gap: 0.75rem;
       text-decoration: none;
+      transition: transform 0.3s;
+    }
+    
+    .logo:hover {
+      transform: scale(1.02);
     }
     
     .logo img {
-      height: 45px;
-      width: auto;
+      height: 50px;
+      width: 50px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
     
     .logo-text {
-      font-size: 1.5rem;
-      font-weight: 800;
+      font-size: 1.6rem;
+      font-weight: 900;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      letter-spacing: -0.5px;
     }
     
     .nav-links {
       display: flex;
-      gap: 2rem;
+      gap: 2.5rem;
       list-style: none;
     }
     
     .nav-links a {
       text-decoration: none;
       color: #555;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 1rem;
       transition: color 0.3s;
       position: relative;
+      padding: 0.5rem 0;
     }
     
     .nav-links a:hover {
@@ -80,7 +142,7 @@
     .nav-links a::after {
       content: '';
       position: absolute;
-      bottom: -5px;
+      bottom: 0;
       left: 0;
       width: 0;
       height: 3px;
@@ -94,69 +156,148 @@
     }
     
     .hero {
-      padding: 140px 2rem 80px;
+      padding: 160px 2rem 100px;
       text-align: center;
       color: white;
+      position: relative;
+      z-index: 1;
     }
     
     .hero-content {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
     }
     
+    /* Logo showcase */
+    .logo-showcase {
+      margin-bottom: 2.5rem;
+    }
+    
+    .hero-logo-container {
+      position: relative;
+      display: inline-block;
+    }
+    
     .hero-logo {
-      width: 150px;
-      height: 150px;
-      margin: 0 auto 2rem;
+      width: 180px;
+      height: 180px;
       background: white;
-      border-radius: 30px;
+      border-radius: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      padding: 20px;
+      box-shadow: 
+        0 25px 80px rgba(0,0,0,0.3),
+        0 0 0 8px rgba(255,255,255,0.2);
+      padding: 25px;
+      position: relative;
+      z-index: 2;
+      transition: transform 0.3s;
+    }
+    
+    .hero-logo:hover {
+      transform: translateY(-5px) rotate(2deg);
     }
     
     .hero-logo img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
+      border-radius: 15px;
+    }
+    
+    /* Decorative elements around logo */
+    .logo-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      z-index: 1;
+      animation: pulse 3s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+    }
+    
+    .sparkle {
+      position: absolute;
+      font-size: 1.5rem;
+      animation: sparkle 2s infinite;
+    }
+    
+    .sparkle:nth-child(1) { top: -20px; left: -30px; animation-delay: 0s; }
+    .sparkle:nth-child(2) { top: -10px; right: -25px; animation-delay: 0.5s; }
+    .sparkle:nth-child(3) { bottom: -15px; left: -20px; animation-delay: 1s; }
+    .sparkle:nth-child(4) { bottom: -10px; right: -30px; animation-delay: 1.5s; }
+    
+    @keyframes sparkle {
+      0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+      50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
     }
     
     .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      font-size: 3.8rem;
+      font-weight: 900;
+      margin-bottom: 1.2rem;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+      line-height: 1.1;
     }
     
     .hero p {
-      font-size: 1.3rem;
-      margin-bottom: 2rem;
+      font-size: 1.4rem;
+      margin-bottom: 2.5rem;
       opacity: 0.95;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
     }
     
     .cta-button {
       display: inline-block;
       background: white;
       color: #667eea;
-      padding: 1rem 2.5rem;
+      padding: 1.2rem 3rem;
       border-radius: 50px;
       text-decoration: none;
-      font-weight: 700;
-      font-size: 1.1rem;
+      font-weight: 800;
+      font-size: 1.2rem;
       transition: all 0.3s;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
     }
     
     .cta-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+    
+    .cta-button:hover::before {
+      left: 100%;
     }
     
     .features {
       background: white;
-      padding: 80px 2rem;
+      padding: 100px 2rem;
+      position: relative;
+      z-index: 1;
     }
     
     .features-container {
@@ -166,77 +307,130 @@
     
     .features h2 {
       text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 3rem;
+      font-size: 2.8rem;
+      margin-bottom: 3.5rem;
       color: #333;
+      font-weight: 800;
     }
     
     .feature-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.5rem;
     }
     
     .feature-card {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
-      padding: 2rem;
-      border-radius: 20px;
+      background: linear-gradient(135deg, #f8f9ff 0%, #f0f3ff 100%);
+      padding: 2.5rem;
+      border-radius: 24px;
       text-align: center;
+      transition: all 0.4s;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transform: scaleX(0);
       transition: transform 0.3s;
     }
     
     .feature-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(102, 126, 234, 0.15);
+      border-color: rgba(102, 126, 234, 0.2);
+    }
+    
+    .feature-card:hover::before {
+      transform: scaleX(1);
     }
     
     .feature-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
+      font-size: 4rem;
+      margin-bottom: 1.2rem;
+      display: inline-block;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
     
     .feature-card h3 {
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
       color: #333;
+      font-weight: 800;
     }
     
     .feature-card p {
       color: #666;
-      line-height: 1.6;
+      line-height: 1.7;
+      font-size: 1.05rem;
     }
     
     .safety-section {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 80px 2rem;
+      padding: 100px 2rem;
       color: white;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
     
     .safety-content {
-      max-width: 800px;
+      max-width: 850px;
       margin: 0 auto;
     }
     
     .safety-section h2 {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       margin-bottom: 1.5rem;
+      font-weight: 800;
     }
     
     .safety-section p {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       opacity: 0.95;
-      line-height: 1.8;
+      line-height: 1.9;
+    }
+    
+    .safety-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
     }
     
     .footer {
-      background: #2d3748;
+      background: #1a1a2e;
       color: white;
-      padding: 40px 2rem;
+      padding: 50px 2rem;
       text-align: center;
     }
     
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .footer-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+      margin-bottom: 1rem;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+    }
+    
     .footer p {
-      opacity: 0.8;
+      opacity: 0.7;
+      font-size: 1rem;
     }
     
     @media (max-width: 768px) {
@@ -249,13 +443,29 @@
       }
       
       .hero-logo {
-        width: 120px;
-        height: 120px;
+        width: 140px;
+        height: 140px;
+        padding: 20px;
+      }
+      
+      .features h2, .safety-section h2 {
+        font-size: 2rem;
+      }
+      
+      .feature-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
+  <!-- Floating background shapes -->
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
   <nav class="navbar">
     <div class="nav-container">
       <a href="#" class="logo">
@@ -273,12 +483,21 @@
 
   <section class="hero">
     <div class="hero-content">
-      <div class="hero-logo">
-        <img src="assets/logo.jpg" alt="LearnKids AI Logo">
+      <div class="logo-showcase">
+        <div class="hero-logo-container">
+          <div class="logo-glow"></div>
+          <span class="sparkle">✨</span>
+          <span class="sparkle">⭐</span>
+          <span class="sparkle">✨</span>
+          <span class="sparkle">🌟</span>
+          <div class="hero-logo">
+            <img src="assets/logo.jpg" alt="LearnKids AI Logo">
+          </div>
+        </div>
       </div>
       <h1>Safe AI Creative Platform for Kids</h1>
       <p>Voice-powered stories, games, and creativity — designed for children ages 4-9 with built-in parental controls</p>
-      <a href="/app" class="cta-button">Start Creating Now</a>
+      <a href="/app" class="cta-button">Start Creating Now 🚀</a>
     </div>
   </section>
 
@@ -322,13 +541,17 @@
 
   <section class="safety-section" id="safety">
     <div class="safety-content">
-      <h2>🔒 Safety First</h2>
+      <div class="safety-icon">🔒</div>
+      <h2>Safety First</h2>
       <p>Every feature is designed with child safety in mind. Built-in content filtering, parental controls, and no data collection. Kids can explore and create in a safe, supervised environment. All stories and content are age-appropriate with positive messaging.</p>
     </div>
   </section>
 
   <footer class="footer">
-    <p>&copy; 2026 LearnKids AI. Designed for safe, creative learning.</p>
+    <div class="footer-content">
+      <img src="assets/logo.jpg" alt="LearnKids AI" class="footer-logo">
+      <p>&copy; 2026 LearnKids AI. Designed for safe, creative learning.</p>
+    </div>
   </footer>
 </body>
 </html>
