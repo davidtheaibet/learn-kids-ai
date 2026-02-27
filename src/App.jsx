@@ -1,36 +1,36 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import './App.css';
 
 // Components
 import VoiceInput from './components/VoiceInput';
 import StoryDisplay from './components/StoryDisplay';
-import BigButton from './components/BigButton';
 import Gamification from './components/Gamification';
 import PippinMascot from './components/PippinMascot';
 import Celebration from './components/Celebration';
 import StoryOptions from './components/StoryOptions';
 import ParentalControls from './safety/ParentalControls';
-import { sanitizeInput, sanitizeOutput } from './safety/ContentFilter';
 import AnimatedBackground from './art/AnimatedBackground';
-import StoryCanvas from './art/StoryCanvas';
-import StorybookExporter from './art/StorybookExporter';
-import AudioPlayer from './audio/AudioPlayer';
-import { AudioToggle } from './audio/SoundEffects';
 import PartyInvitation from './components/PartyInvitation';
 import QuizGame from './components/QuizGame';
 
+// New Games
+import MazeBuilder from './components/MazeBuilder';
+import PuzzleGame from './components/PuzzleGame';
+import BuildYourBear from './components/BuildYourBear';
+import SleepStoryCreator from './components/SleepStoryCreator';
+
 // Navigation Component
 function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   
   const navItems = [
     { path: '/app', label: 'Home', icon: '🏠' },
     { path: '/app/stories', label: 'Stories', icon: '📚' },
-    { path: '/app/quiz', label: 'Quiz', icon: '🎮' },
+    { path: '/app/games', label: 'Games', icon: '🎮' },
     { path: '/app/party', label: 'Party', icon: '🎉' },
+    { path: '/app/sleep', label: 'Sleep', icon: '🌙' },
   ];
   
   return (
@@ -54,9 +54,8 @@ function Navigation() {
       </div>
       
       <div className="nav-actions">
-        <AudioToggle />
         <Link to="/app/parental" className="nav-parental-btn">
-          👨‍👩‍👧‍👦 Parents
+          👨‍👩‍👧‍👦
         </Link>
       </div>
     </nav>
@@ -73,7 +72,7 @@ function HomeDashboard({ streak, xp, level, badges }) {
       transition={{ duration: 0.5 }}
     >
       <div className="dashboard-header">
-        <PippinMascot message="What would you like to create today?" />
+        <PippinMascot message="What would you like to do today?" />
         <Gamification streak={streak} xp={xp} level={level} badges={badges} />
       </div>
       
@@ -84,16 +83,34 @@ function HomeDashboard({ streak, xp, level, badges }) {
           <p>Use your voice to make magical stories!</p>
         </Link>
         
-        <Link to="/app/quiz" className="feature-card-large">
+        <Link to="/app/games" className="feature-card-large">
           <div className="card-icon">🎮</div>
-          <h3>Play Quiz</h3>
-          <p>Test your knowledge and earn badges!</p>
+          <h3>Play Games</h3>
+          <p>Mazes, puzzles, quizzes and more!</p>
         </Link>
         
         <Link to="/app/party" className="feature-card-large">
           <div className="card-icon">🎉</div>
           <h3>Party Invites</h3>
-          <p>Create fun invitations for your friends!</p>
+          <p>Create fun invitations!</p>
+        </Link>
+        
+        <Link to="/app/sleep" className="feature-card-large">
+          <div className="card-icon">🌙</div>
+          <h3>Sleep Stories</h3>
+          <p>Bedtime stories to help you dream</p>
+        </Link>
+        
+        <Link to="/app/games/bear" className="feature-card-large">
+          <div className="card-icon">🧸</div>
+          <h3>Build a Bear</h3>
+          <p>Create your perfect cuddly friend!</p>
+        </Link>
+        
+        <Link to="/app/games/puzzle" className="feature-card-large">
+          <div className="card-icon">🧩</div>
+          <h3>Puzzles</h3>
+          <p>Solve fun sliding puzzles!</p>
         </Link>
       </div>
     </motion.div>
@@ -210,7 +227,88 @@ With courage and kindness, they saved the day and lived happily ever after! 🎉
   );
 }
 
-// Quiz Page
+// Games Hub Page
+function GamesHub() {
+  return (
+    <motion.div
+      className="page-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <h2 className="page-title">🎮 Fun & Games</h2>
+      <div className="games-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+        <Link to="/app/games/maze" className="game-card" style={{ background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)', padding: '30px', borderRadius: '20px', textAlign: 'center', color: 'white', textDecoration: 'none' }}>
+          <div style={{ fontSize: '4rem' }}>🌀</div>
+          <h3>Maze Builder</h3>
+          <p>Build and solve amazing mazes!</p>
+        </Link>
+        
+        <Link to="/app/games/puzzle" className="game-card" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', padding: '30px', borderRadius: '20px', textAlign: 'center', color: 'white', textDecoration: 'none' }}>
+          <div style={{ fontSize: '4rem' }}>🧩</div>
+          <h3>Sliding Puzzle</h3>
+          <p>Solve picture puzzles!</p>
+        </Link>
+        
+        <Link to="/app/games/bear" className="game-card" style={{ background: 'linear-gradient(135deg, #EC4899, #BE185D)', padding: '30px', borderRadius: '20px', textAlign: 'center', color: 'white', textDecoration: 'none' }}>
+          <div style={{ fontSize: '4rem' }}>🧸</div>
+          <h3>Build a Bear</h3>
+          <p>Create your perfect teddy!</p>
+        </Link>
+        
+        <Link to="/app/games/quiz" className="game-card" style={{ background: 'linear-gradient(135deg, #10B981, #059669)', padding: '30px', borderRadius: '20px', textAlign: 'center', color: 'white', textDecoration: 'none' }}>
+          <div style={{ fontSize: '4rem' }}>❓</div>
+          <h3>Quiz Challenge</h3>
+          <p>Test your knowledge!</p>
+        </Link>
+      </div>
+    </motion.div>
+  );
+}
+
+// Individual Game Pages
+function MazePage() {
+  return (
+    <motion.div
+      className="page-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <h2 className="page-title">🌀 Maze Builder</h2>
+      <MazeBuilder />
+    </motion.div>
+  );
+}
+
+function PuzzlePage() {
+  return (
+    <motion.div
+      className="page-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <h2 className="page-title">🧩 Sliding Puzzle</h2>
+      <PuzzleGame />
+    </motion.div>
+  );
+}
+
+function BearPage() {
+  return (
+    <motion.div
+      className="page-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <h2 className="page-title">🧸 Build Your Bear</h2>
+      <BuildYourBear />
+    </motion.div>
+  );
+}
+
 function QuizPage() {
   return (
     <motion.div
@@ -219,7 +317,7 @@ function QuizPage() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <h2 className="page-title">🎮 Quiz Time!</h2>
+      <h2 className="page-title">❓ Quiz Time!</h2>
       <QuizGame />
     </motion.div>
   );
@@ -236,6 +334,21 @@ function PartyPage() {
     >
       <h2 className="page-title">🎉 Create Party Invitations</h2>
       <PartyInvitation />
+    </motion.div>
+  );
+}
+
+// Sleep Story Page
+function SleepPage() {
+  return (
+    <motion.div
+      className="page-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <h2 className="page-title">🌙 Sleep Stories</h2>
+      <SleepStoryCreator />
     </motion.div>
   );
 }
@@ -257,7 +370,6 @@ function ParentalPage() {
 
 // Main App
 function App() {
-  // Load gamification state from localStorage
   const [streak, setStreak] = useState(() => {
     const saved = localStorage.getItem('learnKids_streak');
     return saved ? parseInt(saved) : 1;
@@ -275,7 +387,6 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Save to localStorage when values change
   useEffect(() => {
     localStorage.setItem('learnKids_streak', streak.toString());
     localStorage.setItem('learnKids_xp', xp.toString());
@@ -283,49 +394,28 @@ function App() {
     localStorage.setItem('learnKids_badges', JSON.stringify(badges));
   }, [streak, xp, level, badges]);
 
-  const addXP = (amount) => {
-    setXp(prev => {
-      const newXP = prev + amount;
-      // Level up every 100 XP
-      if (newXP >= level * 100) {
-        setLevel(l => l + 1);
-      }
-      return newXP;
-    });
-  };
-
-  const addBadge = (badge) => {
-    if (!badges.includes(badge)) {
-      setBadges([...badges, badge]);
-    }
-  };
-
   return (
     <Router>
       <div className="app-container">
         <AnimatedBackground />
         
         <Routes>
-          {/* Landing page is at root */}
           <Route path="/" element={<Navigate to="/app" />} />
           
-          {/* App routes */}
           <Route path="/app/*" element={
             <>
               <Navigation />
               <main className="main-content">
                 <Routes>
-                  <Route path="/" element={
-                    <HomeDashboard 
-                      streak={streak} 
-                      xp={xp} 
-                      level={level} 
-                      badges={badges} 
-                    />
-                  } />
+                  <Route path="/" element={<HomeDashboard streak={streak} xp={xp} level={level} badges={badges} />} />
                   <Route path="/stories" element={<StoriesPage />} />
-                  <Route path="/quiz" element={<QuizPage />} />
+                  <Route path="/games" element={<GamesHub />} />
+                  <Route path="/games/maze" element={<MazePage />} />
+                  <Route path="/games/puzzle" element={<PuzzlePage />} />
+                  <Route path="/games/bear" element={<BearPage />} />
+                  <Route path="/games/quiz" element={<QuizPage />} />
                   <Route path="/party" element={<PartyPage />} />
+                  <Route path="/sleep" element={<SleepPage />} />
                   <Route path="/parental" element={<ParentalPage />} />
                 </Routes>
               </main>
